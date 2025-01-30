@@ -1,0 +1,17 @@
+# Navigate to your project directory (replace 'your-static-site' with your folder name)
+cd your-static-site
+
+# Initialize a new Git repository
+git init
+
+# Add all static files to version control
+git add .
+
+# Commit the files with a message
+git commit -m "Initial commit for static files"
+
+# (Optional) Add a remote repository (replace with your actual repo URL)
+git remote add origin <your-repository-url>
+
+# (Optional) Push the changes to the remote repository
+git push -u origin main
