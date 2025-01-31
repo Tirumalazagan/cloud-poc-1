@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Set variables
+FEATURE_BRANCH="feature-$(date +%Y%m%d-%H%M%S)"  # Unique feature branch name
+MAIN_BRANCH="main"  # Change to 'master' if using an older repo
+FILE_NAME="feature.txt"  # File to add as a feature
+
+# Step 1: Check if inside a Git repository
+if [ ! -d ".git" ]; then
+    echo "Error: This is not a Git repository!"
+    exit 1
+fi
+
+# Step 2: Create and switch to a new feature branch
+echo "Creating new branch: $FEATURE_BRANCH"
+git checkout -b "$FEATURE_BRANCH"
+
+# Step 3: Add a new feature (modify a file)
+echo "Adding a new feature..."
+echo "New feature added on $(date)" > "$FILE_NAME"
+
+# Step 4: Commit the new feature
+git add "$FILE_NAME"
+git commit -m "Added a new feature"
+
+# Step 5: Switch back to the main branch
+echo "Switching back to $MAIN_BRANCH"
+git checkout "$MAIN_BRANCH"
+
+# Step 6: Merge the feature branch into main
+echo "Merging $FEATURE_BRANCH into $MAIN_BRANCH"
+git merge "$FEATURE_BRANCH"
+
+# Step 7: Delete the feature branch (optional)
+git branch -d "$FEATURE_BRANCH"
+
+# Step 8: Push changes to remote (optional)
+echo "Pushing changes to remote..."
+git push origin "$MAIN_BRANCH"
+
+echo "Git branching process completed successfully!"
+chmod +x git_branching.sh
+./git_branching.sh
