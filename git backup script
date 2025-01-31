@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Define repository and backup destination
+REPO_DIR="/path/to/your/git/repository"
+BACKUP_DIR="/path/to/your/backup/location"
+
+# Create a timestamped backup
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+DEST="$BACKUP_DIR/backup_$TIMESTAMP"
+
+# Clone the repository into the backup folder
+git clone --mirror "$REPO_DIR" "$DEST"
+
+# Optional: Remove old backups (older than 7 days)
+find "$BACKUP_DIR" -type d -mtime +7 -exec rm -rf {} \;
+
+echo "Backup completed: $DEST"
+chmod +x backup_git.sh
+crontab -e
+0 2 * * * /path/to/backup_git.sh
+@echo off
+set REPO_DIR=C:\path\to\your\git\repository
+set BACKUP_DIR=C:\path\to\your\backup\location
+
+:: Get timestamp
+for /f "tokens=2 delims==" %%I in ('"wmic os get localdatetime /value"') do set dt=%%I
+set TIMESTAMP=%dt:~0,8%_%dt:~8,6%
+set DEST=%BACKUP_DIR%\backup_%TIMESTAMP%
+
+:: Clone repository
+git clone --mirror %REPO_DIR% %DEST%
+
+:: Optional: Remove backups older than 7 days
+forfiles /p %BACKUP_DIR% /d -7 /c "cmd /c rd /s /q @path"
+
+echo Backup completed: %DEST%
