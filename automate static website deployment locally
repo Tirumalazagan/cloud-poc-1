@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Configuration
+REPO_DIR="/path/to/your/repo"  # Change to your local Git repository path
+WEB_DIR="/var/www/html"        # Change to your web server directory
+BRANCH="main"                  # Change to the branch you want to deploy
+LOG_FILE="/var/log/deploy.log" # Log file for debugging
+
+# Function to log messages
+log_message() {
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOG_FILE"
+}
+
+# Navigate to the repository
+cd "$REPO_DIR" || { log_message "Error: Repository path not found!"; exit 1; }
+
+# Fetch the latest changes
+log_message "Fetching updates from Git..."
+git fetch origin "$BRANCH"
+
+# Check if there are updates
+if git diff --quiet HEAD origin/"$BRANCH"; then
+    log_message "No updates found. Exiting..."
+    exit 0
+fi
+
+# Pull latest changes
+log_message "Pulling latest changes..."
+git pull origin "$BRANCH"
+
+# Deploy changes to the web directory
+log_message "Deploying updates..."
+rsync -av --delete "$REPO_DIR/" "$WEB_DIR/"
+
+# Restart web server (Uncomment based on your setup)
+# log_message "Restarting Nginx..."
+# systemctl restart nginx
+
+# log_message "Restarting Apache..."
+# systemctl restart apache2
+
+log_message "Deployment successful!"
+exit 0
